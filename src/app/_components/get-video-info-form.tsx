@@ -117,6 +117,7 @@ const GetVideoInfoForm: FC = () => {
                   href={format.url}
                   download={`${data.videoInfo?.videoDetails.title}_${format.qualityLabel}.mp3`} // Change WebM to MP3
                   className="text-blue-500 underline"
+                  target="_blank"
                 >
                   Download
                 </a>
