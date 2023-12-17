@@ -3,22 +3,42 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
-import React, { type FC } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState, type FC } from "react";
 
 const GetVideoInfoForm: FC = () => {
+  const params = useSearchParams();
+  const router = useRouter();
   const { data, mutate, isLoading, isError, error } =
     api.video.getInfo.useMutation();
-  const [videoUrl, setVideoUrl] = React.useState("");
+  const [videoUrl, setVideoUrl] = useState(() => {
+    const url = params.get("url");
+    return url ?? "";
+  });
+
+  const [preSubmit] = useState(() => {
+    return !!params.get("url");
+  });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (isLoading) return;
 
+    router.push(`?url=${videoUrl}`);
+
     mutate({
       url: videoUrl,
     });
   };
+
+  useEffect(() => {
+    if (preSubmit) {
+      mutate({
+        url: videoUrl,
+      });
+    }
+  }, [preSubmit]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -32,6 +52,7 @@ const GetVideoInfoForm: FC = () => {
           placeholder="YouTube Video URL"
           required
           disabled={isLoading}
+          defaultValue={videoUrl}
         />
         <Button
           className={isLoading ? "hover:cursor-progress" : ""}
@@ -64,19 +85,40 @@ const GetVideoInfoForm: FC = () => {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             ></iframe>
           </div>
-          <div className="flex flex-col gap-2 py-4">
+          <div className="flex flex-col gap-4 py-4">
             {data.videoInfo?.formats.map((format, i) => (
-              <div key={i} className="text-sm">
+              <div
+                key={i}
+                className="flex items-center justify-between rounded-md bg-white p-3 text-sm shadow-md hover:shadow-lg"
+              >
+                <div>
+                  <span className="text-blue-500">{i + 1}.</span>
+                  <span className="ml-2">
+                    Download {format.mimeType?.split(";")[0]}
+                    {!!format.qualityLabel && (
+                      <>
+                        {" | "}
+                        <span className="font-semibold">
+                          {format.qualityLabel}
+                        </span>
+                      </>
+                    )}
+                    {!!format.fps && (
+                      <>
+                        {" "}
+                        <span className="text-gray-600">
+                          ({format.fps} fps)
+                        </span>
+                      </>
+                    )}
+                  </span>
+                </div>
                 <a
                   href={format.url}
-                  download={`${data.videoInfo?.videoDetails.title}_${
-                    format.qualityLabel
-                  }.${format.mimeType?.split(";")[0]?.split("/")[1]}`}
+                  download={`${data.videoInfo?.videoDetails.title}_${format.qualityLabel}.mp3`} // Change WebM to MP3
                   className="text-blue-500 underline"
                 >
-                  {++i}. Download {format.mimeType?.split(";")[0]}{" "}
-                  {!!format.qualityLabel && "|"} {format.qualityLabel}{" "}
-                  {!!format.fps && `(${format.fps} fps)`}{" "}
+                  Download
                 </a>
               </div>
             ))}

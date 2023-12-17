@@ -15,7 +15,9 @@ export const videoRouter = createTRPCRouter({
         throw new Error("URL youtube tidak valid!");
       }
 
-      const videoInfo: ytdl.videoInfo = await ytdl.getInfo(input.url);
+      const videoInfo: ytdl.videoInfo = await ytdl.getInfo(input.url, {
+        lang: "id",
+      });
 
       return {
         videoInfo,
