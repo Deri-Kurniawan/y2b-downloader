@@ -7,7 +7,6 @@ export default async function Home() {
         <h1 className="scroll-m-20 pb-8 text-center text-3xl font-semibold tracking-tight first:mt-0">
           Y2B Downloader
         </h1>
-        {/* example */}
         <p className="scroll-m-20 pb-8 text-center text-sm font-semibold tracking-tight first:mt-0">
           Pengunduh video YouTube online gratis untuk mengunduh video YouTube
           dan Youtube Music dalam format MP4 dan MP3. Unduh video YouTube HD,
@@ -19,9 +18,9 @@ export default async function Home() {
           Contoh URL Valid:{" "}
           <a
             className="text-blue-500 underline"
-            href="https://www.youtube.com/watch?v=6n3pFFPSlW4"
+            href="https://www.youtube.com/watch?v=pyi0ZfuIIvo"
           >
-            https://www.youtube.com/watch?v=6n3pFFPSlW4
+            https://www.youtube.com/watch?v=pyi0ZfuIIvo
           </a>
           <br />
           Video valid biasanya terdapat kata watch?v= di dalam URL
